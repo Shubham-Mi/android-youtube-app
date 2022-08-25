@@ -1,6 +1,9 @@
 package com.example.shubhammittal.youtubeplayer;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import android.util.Log;
@@ -14,8 +17,6 @@ import com.google.android.youtube.player.YouTubePlayerView;
 
 public class YoutubeActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
     private static final String TAG = "YoutubeActivity";
-    @SuppressWarnings("SpellCheckingInspection")
-    static final String GOOGLE_API_KEY = "AIzaSyC2Y7j4nR1xOQt4O-vGzJGNy9JRpjuAQDM";
     static final String YOUTUBE_VIDEO_ID = "XZxQtzUi6d8";
     @SuppressWarnings("SpellCheckingInspection")
     static final String YOUTUBE_PLAYLIST = "PLGwmAEmjn4fkd3IgCnFZSbocpTnka87Pn";
@@ -29,7 +30,17 @@ public class YoutubeActivity extends YouTubeBaseActivity implements YouTubePlaye
         YouTubePlayerView youTubePlayerView = new YouTubePlayerView(this);
         youTubePlayerView.setLayoutParams(new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         constraintLayout.addView(youTubePlayerView);
-        youTubePlayerView.initialize(GOOGLE_API_KEY, this);
+        youTubePlayerView.initialize(getGoogleApiKey(YoutubeActivity.this), this);
+    }
+
+    public static String getGoogleApiKey(Context context) {
+        try {
+            Bundle metaData = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
+            return metaData.get("GOOGLE_API_KEY").toString();
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
